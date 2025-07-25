@@ -1,0 +1,17 @@
+<form action="/favourite-list" method="POST">
+    <style>
+        .fav-btn {
+            background: linear-gradient(135deg, var(--accent), #2cb143);
+            color: rgb(123, 231, 151);
+            border: 2px solid var(--accent);
+        }
+
+        .fav-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #4338ca);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+    <button class="btn fav-btn action-btn" type="submit">Add to favourite</button>
+    <input type="hidden" name="homeId" value="<%= home._id %>">
+</form>

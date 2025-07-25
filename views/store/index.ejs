@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head') %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent House - Find Your Perfect Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f9fafb 0%, #f1f5f9 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      /* Navbar styles (copied from previous implementation) */
+      .navbar {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: white;
+        padding: 0 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .fav-btn {
+        background: linear-gradient(135deg, var(--accent), #38d853);
+        color: rgb(36, 34, 34);
+        border: 2px solid var(--accent);
+      }
+
+      .fav-btn:hover {
+        background: linear-gradient(135deg, #1c4ac8, #4338ca);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 80px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+        transition: transform 0.3s ease;
+      }
+
+      .brand:hover {
+        transform: translateY(-2px);
+      }
+
+      .brand-icon {
+        font-size: 2.2rem;
+        color: #ffde59;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      /* Main content container */
+      .container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      /* Page header */
+      .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .page-header h2 {
+        font-size: 2.8rem;
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .page-header h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        border-radius: 2px;
+      }
+
+      .page-header p {
+        font-size: 1.2rem;
+        color: #666;
+        max-width: 700px;
+        margin: 20px auto 0;
+        line-height: 1.7;
+      }
+
+      /* Search and filter section */
+      .search-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+        margin-bottom: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .filter-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .filter-select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .filter-select:focus {
+        border-color: #ff416c;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 65, 108, 0.1);
+      }
+
+      .search-btn {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(255, 65, 108, 0.3);
+      }
+
+      /* Homes grid */
+      .homes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      /* Home card */
+      .home-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+      }
+
+      .home-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-image {
+        height: 240px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .home-card:hover .card-image img {
+        transform: scale(1.05);
+      }
+
+      .card-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        z-index: 2;
+      }
+
+      .card-content {
+        padding: 25px;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+
+      .home-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 5px;
+      }
+
+      .home-location {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        font-size: 0.95rem;
+      }
+
+      .home-price {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #ff416c;
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .price-period {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        font-weight: 500;
+      }
+
+      .home-meta {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        padding: 20px 0;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .meta-icon {
+        font-size: 1.4rem;
+        color: #ff416c;
+        margin-bottom: 8px;
+      }
+
+      .meta-label {
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      .meta-value {
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 3px;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .details-btn {
+        background: linear-gradient(90deg, #3b82f6, #6366f1);
+        color: white;
+        text-decoration: none;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+
+
+      .details-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+      }
+
+      .rating {
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .rating i {
+        color: #f59e0b;
+        margin-right: 5px;
+      }
+
+      .favorite-btn {
+        background: #f8fafc;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .favorite-btn:hover {
+        background: #ffe4e6;
+        color: #ff416c;
+      }
+
+      .favorite-btn.active {
+        color: #ff416c;
+      }
+
+      /* Footer */
+      .footer {
+        background: linear-gradient(90deg, #1e293b, #0f172a);
+        color: white;
+        padding: 60px 0 30px;
+        margin-top: 60px;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+      }
+
+      .footer-column h3 {
+        font-size: 1.4rem;
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .footer-column h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: #ff416c;
+        border-radius: 2px;
+      }
+
+      .footer-links {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 12px;
+      }
+
+      .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .footer-links a:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .social-link:hover {
+        background: #ff416c;
+        transform: translateY(-5px);
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 40px;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 40px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .page-header h2 {
+          font-size: 2.2rem;
+        }
+
+        .homes-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .search-section {
+          flex-direction: column;
+        }
+
+        .filter-group {
+          width: 100%;
+        }
+
+        .search-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <%- include('../partials/nav') %>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="page-header">
+        <h2>Here are our registered homes:</h2>
+        <p>Browse through our curated collection of beautiful homes and find the perfect place for your next getaway</p>
+      </div>
+
+      <!-- Search and Filters -->
+      <!-- <div class="search-section">
+        <div class="filter-group">
+          <label for="location">Location</label>
+          <select id="location" class="filter-select">
+            <option>Any Location</option>
+            <option>Kathmandu</option>
+            <option>Pokhara</option>
+            <option>Chitwan</option>
+            <option>Lumbini</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="price">Price Range</label>
+          <select id="price" class="filter-select">
+            <option>Any Price</option>
+            <option>Rs 1,000 - 3,000</option>
+            <option>Rs 3,000 - 6,000</option>
+            <option>Rs 6,000 - 10,000</option>
+            <option>Rs 10,000+</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="type">Home Type</label>
+          <select id="type" class="filter-select">
+            <option>Any Type</option>
+            <option>Apartment</option>
+            <option>Villa</option>
+            <option>Cottage</option>
+            <option>Mountain Cabin</option>
+          </select>
+        </div>
+
+        <button class="search-btn">
+          <i class="fas fa-search"></i> Search Homes
+        </button>
+      </div> -->
+
+      <!-- Dynamic Homes Grid -->
+      <div class="homes-grid">
+        <% registeredHomes.forEach(home=> { %>
+          <div class="home-card">
+            <div class="card-image">
+              <img src="<%= home.photo %>" alt="<%= home.houseName %>" class="w-full h-48 object-cover">
+            </div>
+            <div class="card-content">
+              <div class="card-header">
+                <div>
+                  <h3 class="home-name">
+                    <%= home.houseName %>
+                  </h3>
+                  <div class="home-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>
+                      <%= home.location %>
+                    </span>
+                  </div>
+                </div>
+                <div class="home-price">Rs <%= home.price %><span class="price-period">/night</span></div>
+              </div>
+
+              <div class="home-meta">
+                <div class="meta-item">
+                  <i class="fas fa-bed meta-icon"></i>
+                  <span class="meta-label">Beds</span>
+                  <span class="meta-value">
+                    <%= home.beds || 'N/A' %>
+                  </span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-bath meta-icon"></i>
+                  <span class="meta-label">Baths</span>
+                  <span class="meta-value">
+                    <%= home.baths || 'N/A' %>
+                  </span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-ruler-combined meta-icon"></i>
+                  <span class="meta-label">Area</span>
+                  <span class="meta-value">
+                    <%= home.area || 'N/A' %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <a href="/index/<%= home._id %>" class="details-btn">
+                  <i class="fas fa-info-circle"></i> View Details
+                </a>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <%= home.rating %>
+                </div>
+              </div>
+
+              <div style="margin-top: 15px;">
+                <%- include('../partials/favourite', {home: home}) %>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>RentHouse</h3>
+          <p>Find your perfect getaway with our curated selection of beautiful homes across Nepal.</p>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Home List</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Bookings</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Favorites</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Add Your Home</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Popular Locations</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Kathmandu</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Pokhara</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Chitwan</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Lumbini</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Nagarkot</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Contact Us</h3>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-phone"></i> +977 123 456 789</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> info@renthouse.com</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; 2023 RentHouse. All rights reserved.
+      </div>
+    </footer>
+
+    <script>
+      // Favorite button functionality
+      document.querySelectorAll('.favorite-btn').forEach(button => {
+        button.addEventListener('click', function () {
+          this.classList.toggle('active');
+
+          if (this.classList.contains('active')) {
+            this.innerHTML = '<i class="fas fa-heart"></i>';
+          } else {
+            this.innerHTML = '<i class="fas fa-heart"></i>';
+          }
+        });
+      });
+    </script>
+</body>
+
+</html>
