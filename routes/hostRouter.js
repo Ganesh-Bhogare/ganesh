@@ -9,7 +9,7 @@ const hostRouter = express.Router();
 const hostController = require('../controllers/hostController');
 
 hostRouter.get("/add-home", hostController.addHome);
-hostRouter.post('/add-home', upload.single('photo'), homeController.addHomePost);
+hostRouter.post('/add-home', hostController.addHomePost);
 hostRouter.get("/host-home-list", hostController.hostHomeList);
 hostRouter.get("/edit-home/:homeId", hostController.getEditHome);
 hostRouter.post("/edit-home/:homeId", hostController.postEditHome);

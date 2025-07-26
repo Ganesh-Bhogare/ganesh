@@ -51,6 +51,7 @@ const storage = multer.diskStorage({
   }
 });
 
+
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(multer({ storage }).single('photo'));
