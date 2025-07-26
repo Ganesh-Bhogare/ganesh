@@ -1,5 +1,5 @@
 const { check, validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs"); // ✅ Import bcrypt
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 // GET /login
@@ -8,7 +8,7 @@ exports.getLogin = (req, res) => {
         pageTitle: "Login",
         currentPage: "login",
         isLoggedIn: false,
-        user : {},
+        user: {},
         errors: [],
         oldInput: { email: '', password: '' }
     });
@@ -16,11 +16,11 @@ exports.getLogin = (req, res) => {
 
 // GET /signup
 exports.getSignUp = (req, res) => {
-    res.render("auth/signup", {
+    res.render("auth/signUp", {
         pageTitle: "Signup",
         currentPage: "signup",
         isLoggedIn: false,
-        user : {},
+        user: {},
         errors: [],
         oldInput: {
             firstName: '',
@@ -79,10 +79,10 @@ exports.postSignUp = [
         const { firstName, lastName, email, password, confirmPassword, userType, terms } = req.body;
 
         if (!errors.isEmpty()) {
-            return res.status(422).render("auth/signup", {
+            return res.status(422).render("auth/signUp", {
                 pageTitle: "Signup",
                 currentPage: "signup",
-                user : {},
+                user: {},
                 isLoggedIn: false,
                 errors: errors.array().map(e => e.msg),
                 oldInput: { firstName, lastName, email, password, confirmPassword, userType, terms }
@@ -95,7 +95,7 @@ exports.postSignUp = [
                     firstName,
                     lastName,
                     email,
-                    password: hashedPassword, // ✅ Store hashed password
+                    password: hashedPassword,
                     userType
                 });
 
@@ -105,11 +105,11 @@ exports.postSignUp = [
                 res.redirect("/login");
             })
             .catch(err => {
-                return res.status(500).render("auth/signup", {
+                return res.status(500).render("auth/signUp", {
                     pageTitle: "Signup",
                     currentPage: "signup",
                     isLoggedIn: false,
-                    user : {},
+                    user: {},
                     errors: [err.message],
                     oldInput: { firstName, lastName, email, password, confirmPassword, userType, terms }
                 });
@@ -126,7 +126,7 @@ exports.postLogin = async (req, res) => {
             pageTitle: "Login",
             currentPage: "login",
             isLoggedIn: false,
-            user : {},
+            user: {},
             errors: ["User does not found"],
             oldInput: { email }
         });
@@ -138,13 +138,11 @@ exports.postLogin = async (req, res) => {
             pageTitle: "Login",
             currentPage: "login",
             isLoggedIn: false,
-            user : {},
+            user: {},
             errors: ["Invalid password"],
             oldInput: { email }
         });
     }
-
-
 
     req.session.isLoggedIn = true;
     req.session.user = user;
