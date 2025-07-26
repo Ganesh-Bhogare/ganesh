@@ -90,7 +90,7 @@ app.use(authRouter);
 app.use(storeController.get404);
 
 // Start Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 mongoose.connect(MONGO_DB_URL)
   .then(() => {
     console.log("✅ MongoDB Connected");
