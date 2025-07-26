@@ -52,10 +52,13 @@ const storage = multer.diskStorage({
 });
 
 // Middlewares
-app.use(express.urlencoded({ extended: false })); // ✅ FIXED HERE
+app.use(express.urlencoded({ extended: false }));
 app.use(multer({ storage }).single('photo'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/uploads", express.static(path.join(rootDir, 'uploads')));
+// app.use("/host/uploads", express.static(path.join(rootDir, 'uploads')));
+// app.use("/user/uploads", express.static(path.join(rootDir, 'uploads')));
+
 
 // Session Middleware
 app.use(session({

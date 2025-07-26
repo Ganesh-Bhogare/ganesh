@@ -5,13 +5,13 @@
         <%- include('../partials/nav') %>
             <main class="container mx-auto bg-white shadow-lg rounded-lg p-8 mt-10 max-w-6xl">
                 <h2 class="text-3xl text-red-500 font-bold text-center mb-6">
-                    Here are our registered homes:
+                    Here are our Favorite homes:
                 </h2>
                 <div class="flex flex-wrap justify-center gap-6">
                     <% favouriteHomes.forEach(home=> { %>
                         <div
                             class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 w-full max-w-sm">
-                            <img src=" <%= home.photo %>" alt="<%= home.houseName %>" class="w-full h-48 object-cover">
+                            <img src="/uploads/<%= home.photo %>" alt="<%= home.houseName %>" class="w-full h-48 object-cover">
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold text-gray-800 mb-2">
                                     <%= home.houseName %>
@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                                 <form action="/delete-favourite/<%= home._id %>" method="POST"> <button
-                                        class="btn del-btn action-btn" type="submit">Add to favourite</button>
+                                        class="btn del-btn action-btn" type="submit">Remove from favourite</button>
 
                                 </form>
 
